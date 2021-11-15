@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\WorkerResource;
+use App\Http\Requests\StoreWorkerRequest;
 use App\Models\Worker;
 
 class WorkerController extends Controller
@@ -12,11 +14,16 @@ class WorkerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request) /* GET */
     {
-        //GET
-        $workers = Worker::all();
-        return response()-> json($workers);
+
+
+        /*         $workers = Worker::all();
+        return response()-> json($workers); */
+
+        $page = $request->has('page') ? $request->get('page') : 1;
+        $limit = $request->has('limit') ? $request->get('limit') : 5;
+        return WorkerResource::collection(Worker::limit($limit)->offset(($page - 1) * $limit)->get());
     }
 
     /**
@@ -35,9 +42,19 @@ class WorkerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreWorkerRequest $request)
     {
-        //El create
+        // $student = new Student;
+        // $student->fname = $request->fname;
+        // $student->lname = $request->lname;
+        // $student->email = $request->email;
+        // $student->password = $request->password;
+        // $student->save();
+        // return response()->json([
+        //     "message" => "Student record created"
+        // ], 201);
+
+        return WorkerResource::make(Worker::create($request->validated()));
     }
 
     /**
@@ -48,7 +65,7 @@ class WorkerController extends Controller
      */
     public function show($id)
     {
-        //No (?)
+        return WorkerResource::make(Worker::where('id', $id)->firstOrFail());
     }
 
     /**
@@ -69,9 +86,26 @@ class WorkerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreWorkerRequest $request, $id)
     {
-        //Sí
+
+        return WorkerResource::make(Worker::where('id', $id)->update($request->validated()));
+/*
+        if (Worker::where('id', $id)->exists()) {
+            $worker = Worker::find($id);
+            $worker->fname = $request->fname;
+            $worker->lname = $request->lname;
+            $worker->email = $request->email;
+            $worker->password = $request->password;
+            $worker->save();
+            return response()->json([
+                "message" => "worker updated successfully"
+            ], 200);
+        } else {
+            return response()->json([
+                "message" => "worker not found"
+            ], 404);
+        } */
     }
 
     /**
@@ -82,6 +116,18 @@ class WorkerController extends Controller
      */
     public function destroy($id)
     {
-        //Sí
+        return WorkerResource::make(Worker::where('id', $id)->delete());
+
+    /*     if (Worker::where('id', $id)->exists()) {
+            $student = Worker::find($id);
+            $student->delete();
+            return response()->json([
+                "message" => "Student deleted"
+            ], 202);
+        } else {
+            return response()->json([
+                "message" => "Student not found"
+            ], 404);
+        } */
     }
 }

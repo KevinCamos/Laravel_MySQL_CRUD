@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\WorkController;
+use App\Http\Controllers\WorkerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +19,7 @@ use App\Http\Controllers\WorkController;
 //     return $request->user();
 // });
 
-Route::resource('works', WorkController::class);
+Route::resource('workers', WorkerController::class);
 
 
 /* Antes feia açò */
