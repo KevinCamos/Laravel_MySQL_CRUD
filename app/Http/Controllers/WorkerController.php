@@ -116,7 +116,16 @@ class WorkerController extends Controller
      */
     public function destroy($id)
     {
-        return WorkerResource::make(Worker::where('id', $id)->delete());
+        // try{
+            Worker::where('id', $id)->delete();
+            return response()->json([
+                "message" => "Student deleted"
+            ], 202);
+        // }catch{
+
+        // }
+
+        // return WorkerResource::make(Worker::where('id', $id)->delete());
 
     /*     if (Worker::where('id', $id)->exists()) {
             $student = Worker::find($id);
